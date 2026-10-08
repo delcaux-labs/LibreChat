@@ -7,8 +7,8 @@ services:
     #   target: api-build
     image: registry.librechat.ai/librechat-ai/librechat-dev-api:latest
     container_name: LibreChat-API
-    ports:
-      - 3080:3080
+    #ports:
+    #  - 3080:3080
     depends_on:
       - mongodb
       - rag_api
