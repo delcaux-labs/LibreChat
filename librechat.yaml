@@ -265,8 +265,8 @@ interface:
   agents:
     use: true
     create: true
-    share: false
-    public: false
+    share: true
+    public: true
   # Scheduled chats are experimental and disabled unless explicitly enabled.
   # A deployment with Redis-backed resumable streams can run this on every replica.
   # A single-process deployment without Redis must also set
@@ -300,7 +300,7 @@ interface:
     groups: true
     roles: true
   marketplace:
-    use: false
+    use: true
   fileCitations: true
   # Show the thumbs up/thumbs down feedback buttons on responses (default: true)
   feedback: true
@@ -1096,21 +1096,7 @@ endpoints:
   #     #     deploymentName: claude-3-5-haiku@20241022  # Override for this model
 
   custom:
-    # xAI: Grok 4.7 uses the existing OpenAI-compatible chat and agent paths.
-    # https://docs.x.ai/developers/grok-4-7
-    # Set XAI_API_KEY in your environment. No separate SpaceXAI provider is needed.
-    - name: 'xai'
-      # Optional: expose this endpoint only to users in the named tenant.
-      # tenantId: 'your-tenant-id'
-      apiKey: '${XAI_API_KEY}'
-      baseURL: 'https://api.x.ai/v1'
-      models:
-        default: ['grok-4.7']
-        fetch: true
-      titleConvo: true
-      titleModel: 'grok-4.7'
-      modelDisplayLabel: 'xAI'
-
+    
     - name: 'tensorx'
       apiKey: '${TENSORX_API_KEY}'
       baseURL: 'https://api.tensorx.ai/v1'
@@ -1123,117 +1109,6 @@ endpoints:
       titleConvo: true
       titleModel: 'deepseek/deepseek-v4.1-flash'
       modelDisplayLabel: 'TensorX'
-
-    # Anthropic-compatible Example (native `/v1/messages` API)
-    # Set `provider: anthropic` to use the native Anthropic client instead of the
-    # default OpenAI-compatible one — for Anthropic itself or Anthropic-compatible
-    # gateways (e.g. AI gateways, OpenCode Zen). The `baseURL` must be the API root
-    # the Anthropic SDK appends `/v1/messages` to. List models explicitly: model
-    # auto-fetch uses the OpenAI `/models` convention and is not used for this provider.
-    - name: 'Claude-Compatible'
-      provider: 'anthropic'
-      apiKey: '${ANTHROPIC_API_KEY}'
-      baseURL: 'https://api.anthropic.com'
-      # (optional) headers forwarded on every request (e.g. for a reverse proxy);
-      # values support the same placeholders as built-in endpoints.
-      headers:
-        anthropic-version: '2023-06-01'
-      models:
-        default:
-          - 'claude-sonnet-4-5'
-          - 'claude-opus-4-5'
-        fetch: false
-      titleConvo: true
-      titleModel: 'claude-sonnet-4-5'
-      # Agent activity groups: collapse each block of reasoning + tool calls
-      # under a generated one-line header. Same shape as the title options.
-      activityLabel: true
-      activityModel: 'claude-3-5-haiku'
-      # activityEndpoint: 'anthropic'   # run labels on another endpoint's credentials
-      # activityPrompt: 'Write a 5-9 word past-tense label...'
-      # activityMaxPerRun: 20           # cost cap per response
-      # activityCharLimit: 600          # per-entry prompt truncation
-      # Parent phase summaries are an independent opt-in. They collapse 2+
-      # logical activities before the answer into one run-level summary.
-      # activityPhaseLabel: true
-      # activityPhaseModel: 'claude-3-5-haiku' # falls back to activity/title/run model
-      # activityPhaseEndpoint: 'anthropic'     # falls back to activity/run endpoint
-      # activityPhasePrompt: 'Summarize the completed agent phase...'
-      # activityPhaseMaxPerRun: 5               # cost cap per response
-      # Live reasoning labels are also independent. They update one top-level
-      # THINK heading in place and never create or shift message content parts.
-      # Enabling this sends a bounded snapshot (up to 4,000 characters) of the
-      # visible reasoning to the resolved label endpoint, which may be a different provider.
-      # With Langfuse tracing enabled, that snapshot is also recorded as generation input
-      # unless the active redaction policy suppresses the label call.
-      # reasoningLabel: true
-      # reasoningLabelModel: 'claude-3-5-haiku' # falls back to activity/title/run model
-      # reasoningLabelEndpoint: 'anthropic'     # falls back to activity/run endpoint
-      # reasoningLabelPrompt: 'Describe the current reasoning direction...'
-      # reasoningLabelMinChars: 500
-      # reasoningLabelUpdateChars: 400
-      # reasoningLabelUpdateIntervalMs: 3000
-      # A final rewrite may run immediately after a meaningful 120-character tail.
-      # reasoningLabelMaxPerRun: 8
-      modelDisplayLabel: 'Claude (Compatible)'
-
-    # Groq Example
-    - name: 'groq'
-      apiKey: '${GROQ_API_KEY}'
-      baseURL: 'https://api.groq.com/openai/v1/'
-      models:
-        default:
-          - 'llama3-70b-8192'
-          - 'llama3-8b-8192'
-          - 'llama2-70b-4096'
-          - 'mixtral-8x7b-32768'
-          - 'gemma-7b-it'
-        fetch: false
-      titleConvo: true
-      titleModel: 'mixtral-8x7b-32768'
-      modelDisplayLabel: 'groq'
-
-    # Mistral AI Example
-    - name: 'Mistral' # Unique name for the endpoint
-      # For `apiKey` and `baseURL`, you can use environment variables that you define.
-      # recommended environment variables:
-      apiKey: '${MISTRAL_API_KEY}'
-      baseURL: 'https://api.mistral.ai/v1'
-
-      # Models configuration
-      models:
-        # List of default models to use. At least one value is required.
-        default: ['mistral-tiny', 'mistral-small', 'mistral-medium']
-        # Fetch option: Set to true to fetch models from API.
-        fetch: true # Defaults to false.
-
-      # Optional configurations
-
-      # Title Conversation setting
-      titleConvo: true # Set to true to enable title conversation
-
-      # Title Method: Choose between "completion" or "functions".
-      # titleMethod: "completion"  # Defaults to "completion" if omitted.
-
-      # Title Model: Specify the model to use for titles.
-      titleModel: 'mistral-tiny' # Defaults to "gpt-3.5-turbo" if omitted.
-
-      # Summarize setting: Set to true to enable summarization.
-      # summarize: false
-
-      # Summary Model: Specify the model to use if summarization is enabled.
-      # summaryModel: "mistral-tiny"  # Defaults to "gpt-3.5-turbo" if omitted.
-
-      # The label displayed for the AI model in messages.
-      modelDisplayLabel: 'Mistral' # Default is "AI" when not set.
-
-      # Add additional parameters to the request. Default params will be overwritten.
-      # addParams:
-      # safe_prompt: true # This field is specific to Mistral AI: https://docs.mistral.ai/api/
-
-      # Drop Default params parameters from the request. See default params in guide linked below.
-      # NOTE: For Mistral, it is necessary to drop the following parameters or you will encounter a 422 Error:
-      dropParams: ['stop', 'user', 'frequency_penalty', 'presence_penalty']
 
     # OpenRouter Example
     - name: 'OpenRouter'
