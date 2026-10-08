@@ -1420,7 +1420,7 @@ endpoints:
 # # https://www.librechat.ai/docs/configuration/librechat_yaml/object_structure/assistants_endpoint
 
 # Web Search Configuration (optional)
-# webSearch:
+webSearch:
 #   # Jina Reranking Configuration
 #   jinaApiKey: '${JINA_API_KEY}'  # Your Jina API key
 #   jinaApiUrl: '${JINA_API_URL}'  # Custom Jina API URL (optional, defaults to https://api.jina.ai/v1/rerank)
@@ -1431,11 +1431,11 @@ endpoints:
 #   searxngInstanceUrl: '${SEARXNG_INSTANCE_URL}'
 #   searxngApiKey: '${SEARXNG_API_KEY}'
 #   # Tavily (search provider and/or scraper)
-#   tavilyApiKey: '${TAVILY_API_KEY}'
+  tavilyApiKey: '${TAVILY_API_KEY}'
 #   # Keenable (search provider; keyless by default, a key only lifts rate limits)
 #   keenableApiKey: '${KEENABLE_API_KEY}'
 #   # Content scrapers
-#   firecrawlApiKey: '${FIRECRAWL_API_KEY}'
+  firecrawlApiKey: '${FIRECRAWL_API_KEY}'
 #   firecrawlApiUrl: '${FIRECRAWL_API_URL}'
 #   # Outbound search and scrape requests are validated at connect time against
 #   # their resolved IP and blocked from reaching private, loopback, link-local,
