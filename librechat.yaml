@@ -1119,7 +1119,7 @@ endpoints:
           - 'deepseek/deepseek-v4.1-flash'
           - 'z-ai/glm-5.3-flash'
           - 'qwen/qwen3.8-flash-next'
-        fetch: true
+        fetch: false
       titleConvo: true
       titleModel: 'deepseek/deepseek-v4.1-flash'
       modelDisplayLabel: 'TensorX'
